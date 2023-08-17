@@ -10,6 +10,7 @@
 
 body {
   font-family: 'DungGeunMo';
+  margin: 7em;
 }
 
 .wrapper {
@@ -28,8 +29,14 @@ body {
 }
 
 .card {
+  display: inline-block;
   width: 100px;
   height: 100px;
+  margin-right: 1em;
+}
+
+.card:last-child {
+  margin-right: 0;
 }
 
 .card-inner {

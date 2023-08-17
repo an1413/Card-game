@@ -40,12 +40,22 @@
       const $wrapper = document.querySelector('#card-wrapper');
       const total = 12;
       const colors = ['red', 'blue', 'green', 'white', 'yellow', 'pink'];
+      const startTime = getCurrentTimeInSeconds();
       let colorCopy = colors.concat(colors);
       let shuffled = [];
       let clicked = [];
       let completed = [];
       let clickable = false;
 
+
+      function getCurrentTimeInSeconds() {
+        const now = new Date();
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
+        const seconds = now.getSeconds();
+        const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+        return totalSeconds;
+      }
       // 카드 만드는 함수
       function createCard(i) {
         const card = document.createElement('div');
@@ -71,22 +81,33 @@
       }
 
       function clickedCard() {
+        if (!clickable || completed.includes(this) || clicked[0] === this) {
+          return;
+        }
         this.classList.toggle('flipped');
         clicked.push(this);
         if (clicked.length !== 2) {
           return;
         }
+        clickable = false;
         const firstClickedColor = clicked[0].querySelector('.card-back').style.backgroundColor;
         const secondClickedColor = clicked[1].querySelector('.card-back').style.backgroundColor;
         console.log(firstClickedColor, secondClickedColor);
 
         if (firstClickedColor === secondClickedColor) {
+          clickable = true;
           completed.push(firstClickedColor);
           completed.push(secondClickedColor);
           clicked = [];
 
           if (completed.length === total) {
-            alert('축하합니다~!');
+            const finishTime = startTime - getCurrentTimeInSeconds();
+            setTimeout(() => {
+              alert('축하합니다~!' + finishTime);
+            }, 1000)
+            setTimeout(() => {
+              resetGame()
+            }, 4000)
           }
           console.log(completed);
           console.log('맞습니다!');
@@ -95,6 +116,7 @@
           clicked[0].classList.remove('flipped');
           clicked[1].classList.remove('flipped');
           clicked = [];
+          clickable = true;
         }, 500)
       };
 
@@ -114,13 +136,23 @@
           }, 1000 + i * 100)
         })
 
-        document.querySelectorAll('.card').forEach((card) => {
-          setTimeout(() => {
+        setTimeout(() => {
+          document.querySelectorAll('.card').forEach((card) => {
             card.classList.remove('flipped');
-          }, 2000)
-        })
+          });
+          clickable = true;
+        }, 4000);
       }
       startGame()
+
+      function resetGame() {
+        $wrapper.innerHTML = '';
+        colorCopy = colors.concat(colors);
+        clickable = false;
+        shuffled = [];
+        completed = [];
+        startGame();
+      }
 
 
     </script>
